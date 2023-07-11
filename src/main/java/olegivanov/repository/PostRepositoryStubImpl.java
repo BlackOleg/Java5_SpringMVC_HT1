@@ -1,5 +1,6 @@
 package olegivanov.repository;
 
+import olegivanov.exception.NotFoundException;
 import olegivanov.model.Post;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,9 @@ public class PostRepositoryStubImpl implements PostRepository {
     }
 
     public Optional<Post> getById(long id) {
+        if (!repositoryMap.containsKey(id)) {
+            throw new NotFoundException();
+        }
         return Optional.ofNullable(Optional.ofNullable(repositoryMap.get(id)).orElse(null));
     }
 
@@ -35,6 +39,10 @@ public class PostRepositoryStubImpl implements PostRepository {
     }
 
     public void removeById(long id) {
-        repositoryMap.remove(id);
+        if (repositoryMap.containsKey(id)) {
+            repositoryMap.remove(id);
+        } else {
+            throw new NotFoundException();
+        }
     }
 }
